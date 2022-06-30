@@ -1,5 +1,6 @@
 package com.cydeo.library.pages;
 
+import com.cydeo.library.utilities.ConfigurationReader;
 import com.cydeo.library.utilities.Driver;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -23,10 +24,21 @@ public class LoginPage {
     @FindBy(xpath = "//span[contains(text(),'Test')]")
     public WebElement userNameArea;
 
+    @FindBy(xpath = "//a[@id='navbarDropdown']")
+    public WebElement actualUserName;
+
+    @FindBy(xpath = "//a[contains(text(),'Log Out')]")
+    public WebElement logOut;
+
+    @FindBy (xpath = "//h3")
+    public WebElement bookManagement;
+
+
 
 
 
     public void login(String email, String pass){
+        Driver.getDriver().get(ConfigurationReader.getProperty("library1_url"));
         inputEmail.sendKeys(email);
         inputPassword.sendKeys(pass , Keys.ENTER);
     }
