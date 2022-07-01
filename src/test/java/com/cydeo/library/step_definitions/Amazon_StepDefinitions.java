@@ -6,8 +6,10 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -15,8 +17,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertTrue;
+
 public class Amazon_StepDefinitions {
     AmazonPage amazonPage = new AmazonPage();
+    WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 10);
 
     @When("Amazona gir")
     public void amazona_gir() {
@@ -58,31 +63,44 @@ public class Amazon_StepDefinitions {
 
     @And("Cikan sonucta ilk elemanin harry potter ismini icerdigini dogrula")
     public void cikanSonuctaIlkElemaninHarryPotterIsminiIcerdiginiDogrula() {
-        Assert.assertTrue(amazonPage.firstProductAfterSearch.getText().contains("Harry Potter"));
+        assertTrue(amazonPage.firstProductAfterSearch.getText().contains("Harry Potter"));
     }
 
     @And("Fiyatin {string} oldugunu dogrula")
     public void fiyatinOldugunuDogrula(String price) {
-        Assert.assertTrue(amazonPage.priceOfTheFirstProduct.getText().equals(price));
+        assertTrue(amazonPage.priceOfTheFirstProduct.getText().equals(price));
 
     }
 
     @And("Turun paperback oldugunu dogrula")
     public void turunPaperbackOldugunuDogrula() {
-        Assert.assertTrue(amazonPage.firstProductType.getText().equals("Paperback"));
+        assertTrue(amazonPage.firstProductType.getText().equals("Paperback"));
     }
 
 
     @And("Add to basket yap")
     public void addToBasketYap() {
+        amazonPage.accepCookies.click();
         amazonPage.firstProductText.click();
-        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 10);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@id='add-to-cart-button']")));
+
+//        wait.until(ExpectedConditions.visibilityOf(amazonPage.inStockText));
+//        assertTrue("Product is not In Stock",amazonPage.inStockText.isDisplayed());
+//        wait.until(ExpectedConditions.visibilityOf(amazonPage.inStockText));
+//        wait.until(ExpectedConditions.elementToBeClickable(amazonPage.addToBasket));
+        JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+        js.executeScript("arguments[0].click();", amazonPage.addToBasket);
+
+//        wait.until((ExpectedConditions.visibilityOf(amazonPage.addedToBasket)));
+
+        js.executeScript("arguments[0].click();", amazonPage.goToBasket);
 
 
 
-        amazonPage.addToBasket.click();
+    }
 
-        amazonPage.goToBasket.click();
+
+    @And("Baskette bir item oldugunu dogrula.")
+    public void basketteBirItemOldugunuDogrula() {
+        Assert.assertTrue(amazonPage.totalProductInfoElement.getText().contains("1"));
     }
 }
